@@ -1,0 +1,31 @@
+==================================================
+StudentMart Pre-Lab Answers
+Name: Ryan Michael
+USN: 1AT24CS176
+==================================================
+
+Task 1 – Explore the React Project
+--------------------------------------------------
+1. src/main.jsx:
+   Acts as the entry point of the React application where the root component (App) is rendered into the HTML DOM.
+
+2. src/App.jsx:
+   Serves as the main functional React component where the UI structure and layout of the homepage are defined.
+
+3. src/App.css:
+   Holds the CSS styles specifically applied to the App.jsx component to customize its visual layout.
+
+
+Task 2 – Observe App.jsx
+--------------------------------------------------
+1. What is the name of the component?
+   The name of the component is "App".
+
+2. What does the component return?
+   It returns JSX (a JavaScript syntax extension) containing the HTML layout structure.
+
+3. Where do you see HTML-like code?
+   Inside the return (...) block of the App function.
+
+4. What is the purpose of export default?
+   It allows the App component to be imported and used in other files (such as main.jsx).
