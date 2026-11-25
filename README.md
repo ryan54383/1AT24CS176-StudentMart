@@ -1,162 +1,152 @@
-# 🚀 MERN Stack Lab Application
+# Practical 02: User Profile Management System
 
-A modern, full-stack web application built using the **MERN** stack architecture (**M**ongoDB, **E**xpress.js, **R**eact, **N**ode.js) bundled with **Vite**. 
+## Problem Statement
 
-This repository demonstrates a clean split-stack architecture (React/Vite client on port `5173` and Express/Node API server on port `5000`), complete with local MongoDB connectivity, RESTful API endpoints, and real-time client state management.
+Design and develop a User Profile Management System using React, Node.js, and MongoDB.
 
----
+### Requirements
 
-## 🛠️ Tech Stack
+- User Registration
+- User Login
+- View Profile
+- Edit Profile
+- Change Password
+- Input Validation
+- Store and retrieve user data from MongoDB
 
-### **Front-End (Client)**
-* **Library:** [React 18](https://react.dev/)
-* **Build Tool:** [Vite](https://vitejs.dev/)
-* **Styling Framework:** [Tailwind CSS](https://tailwindcss.com/) *(configured for UI component upgrades)*
+## 1. Introduction
 
-### **Back-End (Server)**
-* **Runtime:** [Node.js](https://nodejs.org/)
-* **Framework:** [Express.js](https://expressjs.com/)
-* **Database:** [MongoDB](https://www.mongodb.com/) (Local instance via [Mongoose ODM](https://mongoosejs.com/))
-* **Middleware & Utilities:** `cors`, `dotenv`, `nodemon`
+A User Profile Management System allows registered users to view and manage their personal information after logging in.
 
----
+In this practical, we extend the User Authentication System developed in Practical 1. Users will be able to view their profile, update editable details, and change their password.
 
-## 📁 Project Architecture
+The application uses React for the frontend, Node.js and Express.js for backend APIs, and MongoDB for storing user information.
 
-The repository uses a split client-server directory structure to maintain a clear separation of concerns:
+## 2. Technologies Used
 
-```text
-React lab/
-├── server/                      # Back-End Express API Server
-│   ├── models/                  # Mongoose Database Schemas
-│   │   └── Item.js              # Schema definition for Item collection
-│   ├── .env                     # Server environment variables (Git ignored)
-│   ├── package.json             # Backend dependencies & scripts
-│   └── server.js                # Express app initialization & REST routes
-├── src/                         # Front-End React Client Application
-│   ├── main.jsx                 # Entry point & root component UI logic
-│   └── index.css                # Global styles & Tailwind directives
-├── index.html                   # Vite HTML entry point
-├── package.json                 # Client dependencies & scripts
-├── vite.config.js               # Vite build & dev server config
-└── README.md                    # Project documentation
-```
+| Technology | Purpose |
+|---|---|
+| React | Develop the user interface |
+| Node.js | Run JavaScript on the server |
+| Express.js | Create backend APIs |
+| MongoDB | Store user information |
+| Mongoose | Define schemas and interact with MongoDB |
+| bcryptjs | Hash passwords and compare password hashes |
 
----
+## 3. Working of the Application
 
-## 🚀 Getting Started
+### A. User Registration and Login
 
-Follow these instructions to set up and run the application locally on a Windows/PowerShell environment.
+1. The user registers with the required details.
+2. The backend validates the input and stores the user record in MongoDB.
+3. The user logs in using their registered email and password.
+4. The backend verifies the credentials and establishes an authenticated session or issues a token.
 
-### **Prerequisites**
+These features are carried forward from Practical 1.
 
-Ensure you have the following installed on your machine:
-* [Node.js](https://nodejs.org/) (v18.0.0 or higher recommended)
-* [MongoDB Community Server](https://www.mongodb.com/try/download/community) running locally on port `27017`
-* [MongoDB Compass](https://www.mongodb.com/products/tools/compass) (optional, for visual database administration)
+### B. View Profile
 
----
+1. The authenticated user opens the profile page.
+2. The frontend requests the user's profile from the backend.
+3. The backend identifies the authenticated user.
+4. The user's permitted profile details are retrieved from MongoDB.
+5. The frontend displays the details.
 
-### **Installation & Configuration**
+### C. Edit Profile
 
-1. **Clone the Repository**
-   ```powershell
-   git clone https://github.com/your-username/react-lab.git
-   cd "React lab"
-   ```
+1. The user opens the edit profile form.
+2. The existing profile information is displayed.
+3. The user modifies the permitted fields.
+4. The frontend and backend validate the submitted data.
+5. The backend updates the user's record in MongoDB.
+6. A success or error message is displayed.
 
-2. **Install Client Dependencies**
-   Run the following in the project root folder:
-   ```powershell
-   npm install
-   ```
+### D. Change Password
 
-3. **Install Server Dependencies**
-   Navigate into the `server` directory and install back-end packages:
-   ```powershell
-   cd server
-   npm install
-   cd ..
-   ```
+1. The user enters the current password and the new password.
+2. The backend verifies the current password.
+3. The new password is validated.
+4. The backend hashes the new password before updating MongoDB.
+5. The user receives a confirmation message.
 
-4. **Environment Configuration**
-   Create a `.env` file inside the `server/` folder with the following configuration:
-   ```env
-   PORT=5000
-   MONGO_URI=mongodb://127.0.0.1:27017/react_lab_db
-   ```
+### E. Input Validation
 
----
+The application must validate required fields, email format, and password requirements. The backend must repeat the necessary validation rather than relying only on React.
 
-## 🏃 Running the Application
+## 4. Understanding Frontend and Backend
 
-Because the client and server run on different ports, open **two separate terminal tabs** in VS Code.
+**Frontend:** Displays the profile, edit profile form, password change form, and validation messages.
 
-### **Terminal 1: Back-End Express Server**
-```powershell
-cd server
-node server.js
-```
-> **Output:** `Server running on port 5000` & `MongoDB Connected`
+**Backend:** Provides APIs to retrieve and update profile information and change passwords.
 
-*(Optional)* If you have `nodemon` configured:
-```powershell
-npm run dev
-```
+**Database:** Stores user information in MongoDB and retrieves it when required.
 
-### **Terminal 2: Front-End React App (Vite)**
-```powershell
-# Run from the root "React lab" directory
-npm run dev
-```
-> **Output:** `VITE vX.X.X ready in ... ms` -> `http://localhost:5173/`
+**Authentication:** Ensures that users can access and modify only their own profile information.
 
-Open `http://localhost:5173/` in your browser to interact with the live application.
+## 5. Code Files to Study
 
----
+### Frontend
 
-## 🔌 REST API Reference
+- `client/src/components/Register.jsx` — user registration.
+- `client/src/components/Login.jsx` — user login.
+- `client/src/components/Dashboard.jsx` — profile display and navigation.
+- Additional profile and password components created for this practical.
 
-### **Items Endpoint (`/api/items`)**
+### Backend
 
-| Method | Endpoint | Description | Request Body | Response |
-| :--- | :--- | :--- | :--- | :--- |
-| **GET** | `/api/items` | Fetches all stored items from MongoDB | *None* | `Array<Item>` |
-| **POST** | `/api/items` | Creates and saves a new item | `{ "name": "String" }` | `Item Object` |
+- `server/models/User.js` — user schema.
+- `server/routes/authRoutes.js` — registration and login APIs.
+- `server/routes/profileRoutes.js` — profile-related APIs, if used.
+- `server/middleware/authMiddleware.js` — authentication checks.
+- `server/server.js` — Express configuration and database connection.
 
-#### **Example POST Body**
-```json
-{
-  "name": "Complete MERN Setup"
-}
-```
+The exact filenames may vary according to the implementation.
 
----
+## 6. Suggested API Operations
 
-## 🗺️ Project Roadmap
+| Operation | Example endpoint | Purpose |
+|---|---|---|
+| Register | `POST /api/auth/register` | Create a user |
+| Login | `POST /api/auth/login` | Authenticate a user |
+| View profile | `GET /api/profile` | Retrieve the current user's profile |
+| Edit profile | `PUT /api/profile` | Update permitted profile fields |
+| Change password | `PUT /api/profile/change-password` | Change the authenticated user's password |
 
-- [x] Initial full-stack MERN architecture setup with Vite.
-- [x] MongoDB local database integration with Mongoose ODM.
-- [x] Asynchronous client-server communication using Fetch API.
-- [ ] Implement full CRUD operations (PUT for editing items, DELETE for removals).
-- [ ] Integrate **Google OAuth 2.0** using Passport.js for secure user authentication.
-- [ ] Implement a **Claude AI (Anthropic API)** proxy endpoint for authenticated workspace interactions.
-- [ ] Redesign the UI using Tailwind CSS component libraries.
+These are suggested endpoints; use the actual routes implemented in your application.
 
----
+## 7. Testing
 
-## 🤝 Contributing
+| Test case | Expected result |
+|---|---|
+| Log in with valid credentials | Login succeeds |
+| View profile after login | Correct user details are displayed |
+| Update profile with valid details | Profile is updated |
+| Submit invalid profile details | Validation error is displayed |
+| Change password with the correct current password | Password is updated |
+| Change password with an incorrect current password | Password change is rejected |
+| Access another user's profile | Access is denied |
+| Submit an invalid new password | Validation error is displayed |
 
-Contributions are welcome! To contribute:
+## 8. Learning Outcomes
 
-1. Fork the Project repository.
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`).
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`).
-4. Push to the Branch (`git push origin feature/AmazingFeature`).
-5. Open a Pull Request.
+After completing this practical, We can be able to:
 
----
+- Build profile management components using React.
+- Retrieve and update data through REST APIs.
+- Use Express routes and Mongoose for database operations.
+- Validate profile and password inputs.
+- Implement authenticated, user-specific operations.
+- Hash passwords securely before storing them in MongoDB.
 
-## 📜 License
+## 9. Security Guidelines
 
-Distributed under the MIT License. See `LICENSE` for more information.
+- Never store plaintext passwords.
+- Verify the authenticated user's identity on the backend.
+- Allow users to modify only permitted profile fields.
+- Verify the current password before changing it.
+- Never expose password hashes or sensitive information in API responses.
+- Keep database credentials and authentication secrets out of GitHub.
+
+## 10. Expected Outcome
+
+A working User Profile Management System integrated with the authentication features from Practical 1. Registered users should be able to log in, view and edit their own profiles, and securely change their passwords.

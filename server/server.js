@@ -1,0 +1,50 @@
+const express = require("express");
+const mongoose = require("mongoose");
+const cors = require("cors");
+require("dotenv").config();
+
+const authRoutes = require("./routes/authRoutes");
+const profileRoutes = require("./routes/profileRoutes");
+const productRoutes = require("./routes/productRoutes");
+
+const app = express();
+
+app.use(cors());
+app.use(express.json());
+
+app.get("/", (req, res) => {
+    res.json({
+        message: "StudentMart API is running"
+    });
+});
+
+app.use((req, res, next) => {
+    console.log("Incoming request:", req.method, req.originalUrl);
+    next();
+});
+
+app.use("/api/auth", authRoutes);
+app.use("/api/profile", profileRoutes);
+app.use("/api/products", productRoutes);
+
+// Return JSON for unknown API routes.
+app.use("/api", (req, res) => {
+    res.status(404).json({
+        message: "API endpoint not found"
+    });
+});
+
+const PORT = process.env.PORT || 5002;
+
+mongoose
+    .connect(process.env.MONGO_URI || "mongodb://localhost:27017/react_lab_db")
+    .then(() => {
+        console.log("MongoDB connected");
+
+        app.listen(PORT, () => {
+            console.log(`Server running on http://localhost:${PORT}`);
+        });
+    })
+    .catch((error) => {
+        console.error("MongoDB connection failed:", error.message);
+    });

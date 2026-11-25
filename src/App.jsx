@@ -1,82 +1,79 @@
-import React, { useEffect, useState } from 'react'
-import './App.css'
+import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
+import Login from "./components/Login";
+import Register from "./components/Register";
+import DashboardLayout from "./components/DashboardLayout";
+import Profile from "./components/Profile";
+import AddProduct from "./components/AddProduct";
+import ViewProducts from "./components/ViewProducts";
+import "./App.css";
 
-function App() {
-  const [items, setItems] = useState([])
-  const [name, setName] = useState('')
-  const [loading, setLoading] = useState(false)
-
-  const fetchItems = () => {
-    fetch('http://localhost:5000/api/items')
-      .then((res) => res.json())
-      .then((data) => setItems(data))
-      .catch((err) => console.error('Error fetching items:', err))
-  }
-
-  useEffect(() => {
-    fetchItems()
-  }, [])
-
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    if (!name.trim()) return
-
-    setLoading(true)
-    fetch('http://localhost:5000/api/items', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name }),
-    })
-      .then((res) => res.json())
-      .then(() => {
-        setName('')
-        fetchItems()
-      })
-      .catch((err) => console.error('Error adding item:', err))
-      .finally(() => setLoading(false))
-  }
-
-  return (
-    <div className="container">
-      {/* StudentMart Header */}
-      <header className="header">
-        <h1>StudentMart</h1>
-        <h2>Welcome to StudentMart</h2>
-        <p>Your Online Shopping Application</p>
-        <div className="student-card">
-          Name: Ryan Michael &nbsp;|&nbsp; USN: 1AT24CS176
-        </div>
-      </header>
-
-      {/* Interactive Form Section */}
-      <form onSubmit={handleSubmit} className="item-form">
-        <input
-          type="text"
-          className="item-input"
-          placeholder="Enter item name..."
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-        <button type="submit" className="btn-add" disabled={loading}>
-          {loading ? 'Adding...' : 'Add Item'}
-        </button>
-      </form>
-
-      {/* Dynamic Data Display */}
-      <h3 className="items-heading">Saved Items ({items.length})</h3>
-      {items.length === 0 ? (
-        <p className="empty-state">No items added yet. Type an item above!</p>
-      ) : (
-        <ul className="items-list">
-          {items.map((item) => (
-            <li key={item._id} className="item-card">
-              <span>{item.name}</span>
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
-  )
+function ProtectedRoute({ children }) {
+    const token = localStorage.getItem("token");
+    if (!token) {
+        return <Navigate to="/login" replace />;
+    }
+    return children;
 }
 
-export default App
+function PublicRoute({ children }) {
+    const token = localStorage.getItem("token");
+    if (token) {
+        return <Navigate to="/dashboard/products" replace />;
+    }
+    return children;
+}
+
+function App() {
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        navigate("/login");
+    };
+
+    return (
+        <div className="h-screen w-screen overflow-hidden flex bg-[#EAEDED]">
+            <Routes>
+                {/* Public Authentication Routes */}
+                <Route
+                    path="/login"
+                    element={
+                        <PublicRoute>
+                            <Login />
+                        </PublicRoute>
+                    }
+                />
+                <Route
+                    path="/register"
+                    element={
+                        <PublicRoute>
+                            <Register />
+                        </PublicRoute>
+                    }
+                />
+
+                {/* Authenticated Full-Screen Dashboard Routes */}
+                <Route
+                    path="/dashboard"
+                    element={
+                        <ProtectedRoute>
+                            <DashboardLayout onLogout={handleLogout} />
+                        </ProtectedRoute>
+                    }
+                >
+                    <Route index element={<Navigate to="products" replace />} />
+                    <Route path="profile" element={<Profile onLogout={handleLogout} />} />
+                    <Route path="add-product" element={<AddProduct />} />
+                    <Route path="products" element={<ViewProducts />} />
+                </Route>
+
+                {/* Default Fallback Redirect */}
+                <Route path="/" element={<Navigate to="/dashboard/products" replace />} />
+                <Route path="*" element={<Navigate to="/dashboard/products" replace />} />
+            </Routes>
+        </div>
+    );
+}
+
+export default App;
